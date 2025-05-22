@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>top.lrshuai</groupId>
+        <artifactId>yuanqi-cloud</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>yuanqi-common</artifactId>
+    <packaging>pom</packaging>
+    <name>yuanqi-common</name>
+    <description>通用模块</description>
+
+    <modules>
+        <module>yuanqi-common-core</module>
+        <module>yuanqi-common-security</module>
+        <module>yuanqi-common-bom</module>
+        <module>yuanqi-common-redis</module>
+        <module>yuanqi-common-swagger</module>
+        <module>yuanqi-common-mybatis-plus</module>
+        <module>yuanqi-common-seata</module>
+        <module>yuanqi-common-sentinel</module>
+        <module>yuanqi-common-logstash</module>
+        <module>yuanqi-common-satoken</module>
+        <module>yuanqi-common-api-encrypt</module>
+    </modules>
+
+</project>

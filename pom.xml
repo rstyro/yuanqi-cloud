@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>top.lrshuai</groupId>
+    <artifactId>yuanqi-cloud</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>yuanqi-gateway</module>
+        <module>yuanqi-common</module>
+        <module>yuanqi-gencode</module>
+        <module>yuanqi-module</module>
+        <module>yuanqi-api</module>
+    </modules>
+
+    <properties>
+        <revision>1.0.0</revision>
+        <java.version>17</java.version>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- cloud 和springboot 版本 -->
+        <spring-cloud-alibaba.version>2023.0.3.2</spring-cloud-alibaba.version>
+        <spring-cloud.version>2024.0.0</spring-cloud.version>
+        <spring-boot.version>3.4.4</spring-boot.version>
+
+        <!-- swagger / springdoc -->
+        <swagger-annotations.version>2.2.29</swagger-annotations.version>
+        <springdoc-openapi-starter.version>2.8.6</springdoc-openapi-starter.version>
+        <knife4j.version>4.4.0</knife4j.version>
+
+
+        <!-- 工具包 -->
+        <lombok.version>1.18.38</lombok.version>
+        <hutool.version>5.8.38</hutool.version>
+        <fastjson2.version>2.0.57</fastjson2.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <freemarker.version>2.3.32</freemarker.version>
+        <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
+        <guava.version>33.0.0-jre</guava.version>
+        <redisson.version>3.27.2</redisson.version>
+        <sa-token.version>1.43.0</sa-token.version>
+
+        <!-- 数据库相关 -->
+        <mybatisplus.version>3.5.12</mybatisplus.version>
+        <mysql.version>8.3.0</mysql.version>
+        <druid.version>1.2.20</druid.version>
+        <mybatis-spring-boot.version>2.3.2</mybatis-spring-boot.version>
+
+        <!-- ELK logstash7.3版本及以上使用的logback-core和logback-classic与springboot2.7.6冲突，所以最高7.2-->
+        <logstash.version>7.2</logstash.version>
+        <!-- skywalking 日志收集-->
+        <skywalking-toolkit.version>9.2.0</skywalking-toolkit.version>
+
+        <!-- 定时任务 -->
+        <xxl.job.version>3.1.0</xxl.job.version>
+
+
+
+        <!-- 插件版本 -->
+        <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
+        <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <flatten-maven-plugin.version>1.1.0</flatten-maven-plugin.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <!-- 环境标识，需要与配置文件的名称相对应 -->
+                <profiles.active>dev</profiles.active>
+                <nacos.server>127.0.0.1:8848</nacos.server>
+                <nacos.namespace>94455b2a-cf66-40b5-819b-bba352aaa4f1</nacos.namespace>
+                <nacos.username>nacos</nacos.username>
+                <nacos.password>nacos</nacos.password>
+                <nacos.discovery.group>DEFAULT_GROUP</nacos.discovery.group>
+                <nacos.config.group>DEFAULT_GROUP</nacos.config.group>
+                <logstash.address>127.0.0.1:4567</logstash.address>
+            </properties>
+            <activation>
+                <!-- 默认环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prd</id>
+            <properties>
+                <profiles.active>prd</profiles.active>
+                <nacos.server>127.0.0.1:8848</nacos.server>
+                <nacos.namespace>94455b2a-cf66-40b5-819b-bba352aaa4f1</nacos.namespace>
+                <nacos.username>nacos</nacos.username>
+                <nacos.password>nacos</nacos.password>
+                <nacos.discovery.group>DEFAULT_GROUP</nacos.discovery.group>
+                <nacos.config.group>DEFAULT_GROUP</nacos.config.group>
+                <logstash.address>127.0.0.1:4567</logstash.address>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <!-- 在SpringBoot 2.4.x的版本之后，对于bootstrap.properties/bootstrap.yaml配置文件(我们合起来成为Bootstrap配置文件)的支持，需要导入如下的依赖 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
+        </dependency>
+    </dependencies>
+
+    <!-- 依赖声明 -->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- springcloud版本 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- spring-boot 版本 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
+            <!-- Swagger 依赖配置 -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations.version}</version>
+            </dependency>
+
+            <!-- springboot 只需要依赖无需配置 -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi-starter.version}</version>
+            </dependency>
+
+
+            <!--  mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-annotation</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring-boot.version}</version>
+            </dependency>
+
+            <!-- mysql 数据库连接 -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <!--  阿里巴巴数据库连接池     -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+            <!-- xxl-job -->
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl.job.version}</version>
+            </dependency>
+
+            <!-- hutool -->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-bom</artifactId>
+                <version>${hutool.version}</version>
+                <type>pom</type>
+                <!-- 注意这里是import -->
+                <scope>import</scope>
+            </dependency>
+
+            <!-- fastjson2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- 线程传递值 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${transmittable-thread-local.version}</version>
+            </dependency>
+
+            <!-- guava工具类 -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <!-- common包 import -->
+            <dependency>
+                <groupId>top.lrshuai</groupId>
+                <artifactId>yuanqi-common-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- api包 import -->
+            <dependency>
+                <groupId>top.lrshuai</groupId>
+                <artifactId>yuanqi-api-bom</artifactId>
+                <version>${revision}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- redisson -->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <!-- springboot2版本的，需要 redisson-spring-data-2x-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-data-27</artifactId>
+                <version>${redisson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.redisson</groupId>
+                        <artifactId>redisson-spring-data-32</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+
+            <!-- sa-token -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <!-- Sa-Token 权限认证（Reactor响应式集成）, 在线文档：https://sa-token.cc -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-reactor-spring-boot3-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+<!--            <dependency>-->
+<!--                <groupId>cn.dev33</groupId>-->
+<!--                <artifactId>sa-token-core</artifactId>-->
+<!--                <version>${sa-token.version}</version>-->
+<!--            </dependency>-->
+
+            <!-- 在 thymeleaf 标签中使用 Sa-Token -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dialect-thymeleaf</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <!-- logstash -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash.version}</version>
+            </dependency>
+
+            <!-- knife4j文档聚合 -->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-gateway-spring-boot-starter</artifactId>
+                <version>${knife4j.version}</version>
+            </dependency>
+
+            <!-- skywalking 整合 logback -->
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-logback-1.x</artifactId>
+                <version>${skywalking-toolkit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.skywalking</groupId>
+                <artifactId>apm-toolkit-trace</artifactId>
+                <version>${skywalking-toolkit.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- 引入所有 匹配文件进行过滤 -->
+                <includes>
+                    <include>application*</include>
+                    <include>bootstrap*</include>
+                    <include>logback*</include>
+                </includes>
+                <!-- 启用过滤 即该资源中的变量将会被过滤器中的值替换,比如@profiles.active@  -->
+                <filtering>true</filtering>
+            </resource>
+
+            <!-- 全部引入 -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <!-- 关闭过滤 -->
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
+
+        </resources>
+        <!--插件管理-->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <!-- repackage 创建一个自动可执行的jar或war文件。它可以替换常规的artifact，或者用一个单独的classifier附属在maven构建的生命周期中。 -->
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
+                    <configuration>
+                        <warSourceExcludes>src/main/resources/**</warSourceExcludes>
+                        <warName></warName>
+                    </configuration>
+                </plugin>
+
+                <!-- 统一版本号管理 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${flatten-maven-plugin.version}</version>
+                    <configuration>
+                        <updatePomFile>true</updatePomFile>
+                        <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>flatten.clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

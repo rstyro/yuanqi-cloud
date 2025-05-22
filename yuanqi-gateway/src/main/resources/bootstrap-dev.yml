@@ -1,0 +1,127 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        username: nacos
+        password: nacos
+        namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
+      discovery:
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: nacos
+        namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
+    sentinel:
+      datasource:
+        ds1:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            username: nacos
+            password: nacos
+            data-id: sentinel-geteway
+            group-id: DEFAULT_GROUP
+            data-type: json
+            namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
+            rule-type: gw-flow
+        # 下面是测试 gateway  sentinel api分组
+        group-api:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            username: nacos
+            password: nacos
+            data-id: sentinel-group-api
+            group-id: DEFAULT_GROUP
+            data-type: json
+            namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
+            rule-type: gw-api-group
+        group-rule:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            username: nacos
+            password: nacos
+            data-id: sentinel-group-rule
+            group-id: DEFAULT_GROUP
+            data-type: json
+            namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
+            rule-type: gw-flow
+    #  # 网关配置在nacos中配置
+#    gateway:
+#      routes:
+#        - id: provider
+#          uri: lb://nacos-provider
+#          predicates:
+#            - Path=/provider/**
+#          filters:
+#            # StripPrefix 数字表示要截断的路径的数量
+#            - StripPrefix=1
+#        - id: consumer
+#          uri: lb://nacos-consumer
+#          predicates:
+#            - Path=/consumer/**
+#          filters:
+#            - name: MyRequestRateLimiter
+#              args:
+#                # 令牌桶每秒填充平均速率
+#                redis-rate-limiter.replenishRate: 1
+#                # 令牌桶的上限
+#                redis-rate-limiter.burstCapacity: 2
+#                # 使用SpEL表达式从Spring容器中获取Bean对象
+#                key-resolver: "#{@pathKeyResolver}"
+#            - StripPrefix=1
+
+
+# 动态路由配置
+route:
+  dynamic:
+    enabled: true
+    namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
+    dataId: gateway-route
+    group: DEFAULT_GROUP
+
+
+# 日志追踪
+logging:
+  level:
+    org.springframework.cloud.gateway: info
+
+# 文档聚合
+knife4j:
+  gateway:
+    enabled: true
+    strategy: manual
+    routes:
+      - name: 用户模块
+        service-name: yuanqi-user
+        url: /yuanqi-user/v3/api-docs
+        context-path: /yuanqi-user
+      - name: 订单模块
+        service-name: yuanqi-order
+        url: /yuanqi-order/v3/api-docs
+        context-path: /yuanqi-order
+      - name: 商城模块
+        service-name: yuanqi-mall
+        url: /yuanqi-mall/v3/api-docs
+        context-path: /yuanqi-mall
+#    strategy: discover
+#    discover:
+#      version: OpenAPI3
+#      enabled: true
+#      excluded-services:
+#        - cloud-gateway
+#      service-config:
+#        cloud-order:
+#          - group-name: 订单服务
+#            order: 1
+#            contextPath: /cloud-order
+#        cloud-user:
+#          - group-name: 用户服务
+#            order: 2
+#            contextPath: /cloud-user
+#        cloud-mall:
+#          - group-name: 商城服务
+#            order: 0
+#            contextPath: /cloud-mall
+#    tags-sorter: order
+#    operations-sorter: order

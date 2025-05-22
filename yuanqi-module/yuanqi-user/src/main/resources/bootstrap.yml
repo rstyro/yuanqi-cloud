@@ -1,0 +1,31 @@
+server:
+  port: 8001
+spring:
+  application:
+    name: yuanqi-user
+  profiles:
+    active: @profiles.active@
+  main:
+    allow-bean-definition-overriding: true
+#    allow-circular-references: true
+
+
+swagger:
+  description: 用户服务模块接口
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      # 默认 /actuator，修改地址，不容易让人猜到
+      base-path: /meterIndex
+      exposure:
+        # 如果暴露所有就 '*' 需要用单引号包起来
+        include: '*'
+
+
+mybatis-plus:
+  mapperPackage: top.lrshuai.user.mapper.**

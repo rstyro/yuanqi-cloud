@@ -1,0 +1,14 @@
+server:
+  port: 8002
+spring:
+  application:
+    name: yuanqi-order
+  profiles:
+    active: @profiles.active@
+  main:
+#    allow-circular-references: true
+    allow-bean-definition-overriding: true
+
+
+swagger:
+  description: 订单服务模块接口

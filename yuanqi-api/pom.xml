@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>top.lrshuai</groupId>
+        <artifactId>yuanqi-cloud</artifactId>
+        <version>${revision}</version>
+    </parent>
+    <artifactId>yuanqi-api</artifactId>
+    <packaging>pom</packaging>
+    <name>yuanqi-api</name>
+    <description>各个模块的feign api等 ，用与引入依赖</description>
+    <modules>
+        <module>yuanqi-api-bom</module>
+        <module>yuanqi-api-user</module>
+        <module>yuanqi-api-order</module>
+        <module>yuanqi-api-mall</module>
+    </modules>
+</project>

@@ -1,0 +1,19 @@
+# 自定义swagger配置，可覆盖,参数含义可查看 SpringdocProperties.class
+doc:
+  title: 接口文档
+  description: 微服务接口文档
+  version: 1.0.0
+  name: rstyro
+  email:
+  authUrl: https://rstyro.gitee.io/blog/
+  license: Apache 2.0
+  licenseUrl: https://springdoc.org
+  termsOfServiceUrl:
+
+springdoc:
+  api-docs:
+    enabled: true # 开启OpenApi接口
+    path: /v3/api-docs  # 自定义路径，默认为 "/v3/api-docs"
+  swagger-ui:
+    enabled: true # 开启swagger界面，依赖OpenApi，需要OpenApi同时开启
+    path: /doc.html # 自定义路径，默认为"/swagger-ui/index.html"
