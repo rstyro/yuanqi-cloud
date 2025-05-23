@@ -86,8 +86,8 @@
     <logger name="com.lrs.core" level="DEBUG" />
   -->
 
-    <!-- skywalking日志收集 -->
-    <include resource="logback-skylog.xml" />
+    <!-- 包含logstash日志配置,不使用ELK注释上即可 -->
+    <include resource="logback-logstash.xml" />
 
     <!-- 系统模块日志级别控制  -->
     <logger name="top.lrshuai" level="info" />

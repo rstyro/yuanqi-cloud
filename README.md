@@ -2,10 +2,16 @@
 - 自用脚手架
 
 #### 1、环境
-- springcloud  2024.0.0
-- springcloud-alibaba 2023.0.3.2
-- springboot 3.4.4
+- Springcloud  2024.0.0
+- Springcloud-alibaba 2023.0.3.2
+- Springboot 3.4.4
 - JDK17
+- Nacos 2.5.1
+- ELK
+  - Elasticsearch 8.17.6
+  - Logstash 8.17.6
+  - Kibana  8.17.6
+- Seata 
 
 #### 2、模块解释
 - data 资源数据，数据脚本、nacos配置以及相关组件说明

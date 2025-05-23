@@ -8,8 +8,10 @@
 - 本次测试使用的版本是：`7.17.18`
 - 本次安装在windows
 - elasticsearch和kibana 直接解压进入bin执行启动程序即可
+  - 本地启动es的，把配置文件的验证去掉：`xpack.security.enabled: false` 
   - 执行`elasticsearch.bat`和`kibana.bat`即可
 - logstash需要进入解压目录下的config下新建`logstash.conf`
+
 ```conf
 input {
     tcp {
@@ -34,6 +36,8 @@ output{
      hosts => ["localhost:9200"] 
      # 用一个项目名称来做索引，app-name 和springboot的日志配置相关。
      index => "%{[app-name]}-%{+YYYY.MM.dd}" 
+     #user => "elastic"
+     #password => "password"
      
   }
   stdout { codec => rubydebug }
@@ -44,12 +48,14 @@ output{
 
 
 #### 2、springboot应用程序引用logstash依赖
+
+- 可查看Github,获取最新版本对应：[https://github.com/logfellow/logstash-logback-encoder](https://github.com/logfellow/logstash-logback-encoder)
+
 ```xml
 <dependency>
     <groupId>net.logstash.logback</groupId>
     <artifactId>logstash-logback-encoder</artifactId>
-  <!-- logstash7.3版本及以上使用的logback-core和logback-classic与springboot2.7.6冲突，所以最高7.2 -->
-    <version>7.2</version>
+    <version>8.1</version>
 </dependency>
 ```
 - 在日志文件`logback.xml`，配置日志

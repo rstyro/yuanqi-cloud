@@ -51,8 +51,10 @@
         <druid.version>1.2.20</druid.version>
         <mybatis-spring-boot.version>2.3.2</mybatis-spring-boot.version>
 
-        <!-- ELK logstash7.3版本及以上使用的logback-core和logback-classic与springboot2.7.6冲突，所以最高7.2-->
-        <logstash.version>7.2</logstash.version>
+        <!-- ELK logstash-->
+        <logstash.version>8.1</logstash.version>
+        <logback-classic.version>1.5.18</logback-classic.version>
+        <logback-access.version>2.0.6</logback-access.version>
         <!-- skywalking 日志收集-->
         <skywalking-toolkit.version>9.2.0</skywalking-toolkit.version>
 
@@ -336,6 +338,21 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback-classic.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback-classic.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback.access</groupId>
+                <artifactId>logback-access-common</artifactId>
+                <version>${logback-access.version}</version>
             </dependency>
 
             <!-- knife4j文档聚合 -->

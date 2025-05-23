@@ -106,6 +106,10 @@
             <artifactId>yuanqi-common-sentinel</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>top.lrshuai</groupId>
+            <artifactId>yuanqi-common-logstash</artifactId>
+        </dependency>
 
     </dependencies>
 
