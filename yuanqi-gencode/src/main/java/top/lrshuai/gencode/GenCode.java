@@ -41,7 +41,7 @@ public class GenCode {
         param.put("custName","测试注入参数");
 
         // 代码生成位置
-        String outPath = System.getProperty("user.dir")+"/springcloud-gencode/";
+        String outPath = System.getProperty("user.dir")+"/yuanqi-gencode/";
 
         FastAutoGenerator.create(DATA_SOURCE_CONFIG)
                 .globalConfig(builder -> {
@@ -65,6 +65,7 @@ public class GenCode {
                             .addTablePrefix("t_", "c_")
                             .entityBuilder()
                             .enableLombok()
+                            .enableTableFieldAnnotation()
                             .enableChainModel()
                             .naming(NamingStrategy.underline_to_camel)//数据表映射实体命名策略：默认下划线转驼峰underline_to_camel
                             .columnNaming(NamingStrategy.underline_to_camel)//表字段映射实体属性命名规则：默认null，不指定按照naming执行
@@ -77,13 +78,20 @@ public class GenCode {
                             .enableRestStyle()
                     ;
 
+                    builder.entityBuilder()
+                            .javaTemplate("/templates/entity1.java") // 设置实体类模板
+//                            .disable() // 禁用实体类生成
+//                            .serviceBuilder()
+//                            .disableService() // 禁用 Service 层生成
+//                            .serviceTemplate("/templates/service.java") // 设置 Service 模板
+//                            .serviceImplTemplate("/templates/serviceImpl.java") // 设置 ServiceImpl 模板
+                            .build();
                 })
                 .templateEngine(new FreemarkerTemplateEngine())
-                // 自定义生成代码的模板
-                .templateConfig(config->config.entity("/templates/entity1.java"))
-                // 自定义代码参数 
+                // 自定义代码参数
                 .injectionConfig(config->config.customMap(param))
                 .execute();
+
     }
 
     // 处理 all 情况

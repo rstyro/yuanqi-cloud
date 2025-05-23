@@ -17,11 +17,20 @@ import lombok.experimental.Accessors;
     </#if>
 </#if>
 
+<#-- ----------  判断是否是时间类型，  ---------->
+<#list table.fields as field>
+    <#if field.propertyType == 'LocalDateTime'>
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+        <#break>
+    </#if>
+</#list>
+
+
 /**
 * <p>
 * ${table.comment!}
 * </p>
-*
 * 自定义注入属性 ${custName}
 * @author ${author}
 * @since ${date}
@@ -98,6 +107,11 @@ public class ${entity} {
 <#-- 逻辑删除注解 -->
     <#if field.logicDeleteField>
     @TableLogic
+    </#if>
+<#-- ----------  判断是否是时间类型，是就加两个注解  ---------->
+    <#if field.propertyType == 'LocalDateTime'>
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     </#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>
