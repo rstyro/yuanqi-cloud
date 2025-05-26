@@ -1,0 +1,68 @@
+# 版本属性已经 过时
+# version: '3.8'
+
+name: cloud
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.6
+    container_name: elasticsearch
+    environment:
+      - TZ=Asia/Shanghai
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - ELASTIC_PASSWORD=rstyro  # 请修改密码
+    volumes:
+      - D:/cloud/docker/elk/elasticsearch/data:/usr/share/elasticsearch/data
+      - D:/cloud/docker/elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+    networks:
+      - elk-network
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'curl -u elastic:$ELASTIC_PASSWORD -sf http://localhost:9200/_cluster/health || exit 1'" ]
+      interval: 30s
+      timeout: 15s
+      retries: 30
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.17.6
+    container_name: logstash
+    volumes:
+      - D:/cloud/docker/elk/logstash/pipeline:/usr/share/logstash/pipeline
+      - D:/cloud/docker/elk/logstash/data:/usr/share/logstash/data
+    environment:
+      - LS_JAVA_OPTS=-Xmx512m -Xms512m
+      - TZ=Asia/Shanghai
+      - xpack.monitoring.elasticsearch.username=elastic
+      - xpack.monitoring.elasticsearch.password=rstyro
+      - xpack.monitoring.enabled=true
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - "5044:5044"   # Filebeat 输入
+      - "4567:4567"   # cloud elk日志收集
+    networks:
+      - elk-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.17.6
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=rstyro
+      - I18N_LOCALE=zh-CN
+    volumes:
+      - D:/cloud/docker/elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elk-network
+
+networks:
+  elk-network:
+    driver: bridge
