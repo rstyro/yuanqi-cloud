@@ -47,6 +47,14 @@ spring:
             namespace: 94455b2a-cf66-40b5-819b-bba352aaa4f1
             rule-type: gw-flow
     #  # 网关配置在nacos中配置
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+#      password: rstyro
+
+
+
 #    gateway:
 #      routes:
 #        - id: provider

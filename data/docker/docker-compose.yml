@@ -4,6 +4,65 @@
 name: cloud
 
 services:
+  nacos:
+    image: nacos/nacos-server:${NACOS_VERSION}
+    container_name: nacos
+    environment:
+      - MODE=standalone
+      - NACOS_AUTH_IDENTITY_KEY=name
+      - NACOS_AUTH_IDENTITY_VALUE=rstyro
+      - NACOS_AUTH_TOKEN=NTg2NDFlMWFiYzQxNGE2ZmIyYTk3ODhjZGMzNDM3ZGU=
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      # - MYSQL_SERVICE_HOST=mysql8  # 也是docker容器才可用
+      - MYSQL_SERVICE_HOST=host.docker.internal  # windows 系统可以使用host.docker.internal(访问宿主机)
+      - MYSQL_SERVICE_PORT=3306
+      - MYSQL_SERVICE_DB_NAME=nacos
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=root
+      - MYSQL_SERVICE_DB_PARAM=characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=GMT%2B8
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9849:9849"
+    volumes:
+      - D:/cloud/docker/nacos/logs/:/home/nacos/logs
+    restart: always
+    networks:
+      - cloud-network
+  redis:
+    image: redis:6.2.18
+    container_name: redis
+    ports:
+      - "16379:6379"  # Redis 默认端口映射到宿主机
+    volumes:
+      - ./redis/data:/data  # 持久化 Redis 数据到本地目录
+      - ./redis/conf/redis.conf:/usr/local/etc/redis/redis.conf  # 挂载自定义配置文件（可选）
+    environment:
+      - TZ=Asia/Shanghai  # 设置时区
+    command: redis-server /usr/local/etc/redis/redis.conf  # 使用自定义配置启动
+    restart: always  # 容器崩溃自动重启
+    networks:
+      - cloud-network
+  mysql8:
+    image: mysql:8.0.42  # 使用 MySQL 8.0 官方镜像
+    container_name: mysql8
+    environment:
+      - MYSQL_ROOT_PASSWORD=root  # 设置 root 用户密码（请根据实际需求修改）
+      - MYSQL_DATABASE=nacos  # 初始化数据库 nacos
+      - MYSQL_USER=nacos  # 可选：创建专用用户
+      - MYSQL_PASSWORD=nacos  # 可选：专用用户密码
+    ports:
+      - "13306:3306"  # 映射 MySQL 默认端口
+    volumes:
+      - ./mysql/data:/var/lib/mysql  # 持久化数据到宿主机 [[2]]
+      - ./mysql/sql/nacos_init.sql:/docker-entrypoint-initdb.d/init.sql  # 可选：初始化脚本（如创建表结构）
+      - ./mysql/conf/my.cnf:/etc/mysql/my.cnf  # 映射配置文件
+    restart: always
+#    command:
+#      # 将mysql8.0默认密码策略 修改为 原先 策略 (mysql8.0对其默认策略做了更改 会导致密码无法匹配)
+#      -- authentication_policy=mysql_native_password
+    networks:
+      - cloud-network
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.6
     container_name: elasticsearch
@@ -17,7 +76,7 @@ services:
     ports:
       - "9200:9200"
     networks:
-      - elk-network
+      - cloud-network
     healthcheck:
       test: [ "CMD-SHELL", "sh -c 'curl -u elastic:$ELASTIC_PASSWORD -sf http://localhost:9200/_cluster/health || exit 1'" ]
       interval: 30s
@@ -43,7 +102,7 @@ services:
       - "5044:5044"   # Filebeat 输入
       - "4567:4567"   # cloud elk日志收集
     networks:
-      - elk-network
+      - cloud-network
 
   kibana:
     image: docker.elastic.co/kibana/kibana:8.17.6
@@ -61,8 +120,8 @@ services:
       elasticsearch:
         condition: service_healthy
     networks:
-      - elk-network
+      - cloud-network
 
 networks:
-  elk-network:
+  cloud-network:
     driver: bridge
