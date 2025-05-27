@@ -8,6 +8,7 @@ services:
     image: nacos/nacos-server:${NACOS_VERSION}
     container_name: nacos
     environment:
+      - TZ=Asia/Shanghai
       - MODE=standalone
       - NACOS_AUTH_IDENTITY_KEY=name
       - NACOS_AUTH_IDENTITY_VALUE=rstyro
@@ -47,6 +48,7 @@ services:
     image: mysql:8.0.42  # 使用 MySQL 8.0 官方镜像
     container_name: mysql8
     environment:
+      - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=root  # 设置 root 用户密码（请根据实际需求修改）
       - MYSQL_DATABASE=nacos  # 初始化数据库 nacos
       - MYSQL_USER=nacos  # 可选：创建专用用户
