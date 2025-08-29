@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import lombok.extern.slf4j.Slf4j;
@@ -46,23 +47,24 @@ public class GenCode {
         FastAutoGenerator.create(DATA_SOURCE_CONFIG)
                 .globalConfig(builder -> {
                     builder.author(AUTHOR) // 设置作者
-                            .enableSwagger() // 开启 swagger 模式
-                            .enableSpringdoc()
+//                            .enableSwagger() // 开启 swagger 模式
+//                            .enableSpringdoc()
                             .disableOpenDir()
                             .outputDir(outPath+"/src/main/java"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
                     // 设置父包名
-                    builder.parent(basePackages)
+                    PackageConfig.Builder test = builder.parent(basePackages)
                             // 设置父包模块名
                             .moduleName("test")
                             // 设置mapperXml生成路径
-                            .pathInfo(Collections.singletonMap(OutputFile.xml,outPath+"/src/main/resources/mapper/test"));
+                            .pathInfo(Collections.singletonMap(OutputFile.xml, outPath + "/src/main/resources/mapper/test"));
+                    param.put("basePackage",test.build().getParent());
                 })
                 .strategyConfig((scanner, builder) -> {
                     builder.addInclude(getTables(scanner.apply("请输入表名，多个英文逗号分隔？所有输入 all"))) // 设置需要生成的表名
                             // 设置过滤表前缀
-                            .addTablePrefix("t_", "c_")
+                            .addTablePrefix("t_", "c_","ctmp_")
                             .entityBuilder()
                             .enableLombok()
                             .enableTableFieldAnnotation()
@@ -80,6 +82,9 @@ public class GenCode {
 
                     builder.entityBuilder()
                             .javaTemplate("/templates/entity1.java") // 设置实体类模板
+//                            .mapperBuilder()
+//                            .mapperTemplate("/templates/mapper.java") // 自定义mapper.java
+//                            .mapperXmlTemplate("/templates/mapper.xml") // 自定义mapper xml文件模版
 //                            .disable() // 禁用实体类生成
 //                            .serviceBuilder()
 //                            .disableService() // 禁用 Service 层生成
@@ -89,7 +94,13 @@ public class GenCode {
                 })
                 .templateEngine(new FreemarkerTemplateEngine())
                 // 自定义代码参数
-                .injectionConfig(config->config.customMap(param))
+                .injectionConfig(config->config.customMap(param)
+                        // 自定义输出DTO VO 类
+//                        .customFile(new CustomFile.Builder().fileName("Dto.java")
+//                                .templatePath("/templates/dto.java.ftl").packageName("dto").build())
+//                        .customFile(new CustomFile.Builder().fileName("Vo.java")
+//                                .templatePath("/templates/vo.java.ftl").packageName("vo").build())
+                )
                 .execute();
 
     }
